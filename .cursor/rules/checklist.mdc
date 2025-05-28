@@ -1,0 +1,6 @@
+---
+description: Comprehensive reference for Taskmaster MCP tools and CLI commands.
+globs: **/*
+alwaysApply: true
+---
+Make sure you check off items from the plan.md as you complete them
