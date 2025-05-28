@@ -28,6 +28,16 @@ impl StrategyRunner {
         }
         triggered
     }
+
+    pub fn run_on_slice(&self, candles: &[Candle]) -> Vec<String> {
+        let mut triggered = Vec::new();
+        for s in &self.strategies {
+            if s.check_signal(candles) {
+                triggered.push(s.name().to_string());
+            }
+        }
+        triggered
+    }
 }
 
 pub mod vwap_bounce;
