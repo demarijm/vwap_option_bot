@@ -22,6 +22,17 @@ This repository contains a Rust project that implements the foundations of a tra
 
 The current implementation is a stub and does not place real trades. It can serve as a starting point for further development.
 
+## Web Backtester
+
+A minimal web interface is included using a lightweight HTTP server and [htmx](https://htmx.org/).
+Start the server with:
+
+```bash
+cargo run
+```
+
+Then open `http://127.0.0.1:8080` in your browser. Click **Run Backtest** to execute a simple backtest on sample CSV data and view the strategy signals.
+
 ## Contributing
 
 Pull requests are welcome. Please run `cargo test` before submitting changes.

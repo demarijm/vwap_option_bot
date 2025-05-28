@@ -75,6 +75,7 @@ pub fn is_three_red_candles(candles: &[Candle]) -> bool {
 }
 
 pub mod strategies;
+pub mod server;
 
 #[cfg(test)]
 mod tests {
