@@ -1,0 +1,88 @@
+<context>
+# Overview  
+The VWAP Bounce Option Bot is an automated trading system designed to execute options trades based on a quantitative "VWAP bounce" strategy. It targets active traders and developers who want to automate intraday options trading on US equities (e.g., SPY, QQQ, TSLA). The bot aims to capitalize on short-term price reversals when the price is below VWAP and a sequence of red candles is detected, entering same-day call options. This solution provides a systematic, emotionless approach to trading, with risk management and backtesting capabilities.
+
+# Core Features  
+- **VWAP Calculation & Candle Management**
+  - Maintains a rolling window of 1-minute candles and computes the Volume Weighted Average Price (VWAP).
+  - Enables real-time detection of price action relative to VWAP.
+- **Entry Signal Detection**
+  - Identifies 3 consecutive red candles below VWAP as a trade entry signal.
+  - Ensures signals are based on robust, repeatable logic.
+- **Automated Option Trade Execution**
+  - Authenticates with a broker (e.g., Alpaca, with stubs for easy swapping).
+  - Fetches account balance, option chain, and submits buy orders for 1% of account value.
+  - Logs all trades and order statuses.
+- **Risk Management**
+  - Limits to 1 trade per day.
+  - Optional exit logic (e.g., take profit at +15%, stop loss at -10%).
+  - Retries API calls on failure and logs all decisions locally.
+- **Backtesting Engine**
+  - Parses historical CSV candle data to simulate strategy performance.
+  - Outputs performance metrics for validation.
+- **Deployment Ready**
+  - Designed for VPS/cloud hosting with logging and notification hooks.
+  - Modular API layer for easy exchange/broker integration.
+
+# User Experience  
+- **User Personas**: Quantitative traders, developers, and hobbyists seeking automated options trading.
+- **Key User Flows**:
+  - Configure bot (asset, broker, risk parameters).
+  - Start bot and monitor logs/trade activity.
+  - Review trade logs and backtest results.
+- **UI/UX Considerations**:
+  - Primarily CLI-based for now; logs and notifications can be integrated with email/Slack.
+  - Clear error messages and trade status updates.
+</context>
+<PRD>
+# Technical Architecture  
+- **System Components**:
+  - Core bot logic (Rust)
+  - Exchange API trait and swappable implementations (e.g., AlpacaApiStub)
+  - Data models: Candle, OptionContract, TradeLog
+  - Backtesting module
+- **APIs and Integrations**:
+  - Broker API (stubbed, ready for Alpaca/IB integration)
+  - Local logging (JSON/SQLite)
+  - Notification hooks (future)
+- **Infrastructure Requirements**:
+  - Runs on any server with Rust toolchain
+  - Can be deployed on VPS/cloud (DigitalOcean, Fly.io)
+
+# Development Roadmap  
+- **Phase 1: Strategy & Platform**
+  - Define trading rules, select asset and broker, confirm candle interval
+- **Phase 2: Project Setup**
+  - Scaffold Rust project, add dependencies
+- **Phase 3: Market Data Fetcher**
+  - Implement candle struct, rolling window, VWAP calculation
+- **Phase 4: Entry Logic**
+  - Detect 3 red candles below VWAP
+- **Phase 5: Trade Execution**
+  - Authenticate, fetch balance, get option chain, submit order, log trades
+- **Phase 6: Risk Management**
+  - Trade limits, exit logic, retry, local logging
+- **Phase 7: Backtesting Engine**
+  - Parse CSV, simulate trades, output metrics
+- **Phase 8: Deployment**
+  - VPS/cloud hosting, uptime management, notifications
+- **Future Enhancements**
+  - Real broker API integration, advanced exit logic, web UI, multi-asset support
+
+# Logical Dependency Chain
+- Foundation: Data models, ExchangeApi trait, stub implementation
+- Next: Candle fetching, VWAP calculation, entry logic
+- Then: Broker integration, trade execution, logging
+- After: Risk management, backtesting
+- Finally: Deployment, notifications, UI
+- Each phase builds on the previous, ensuring a working CLI bot as early as possible
+
+# Risks and Mitigations  
+- **Technical challenges**: Real-time data handling, broker API changes. Mitigation: Use trait-based API for easy swapping and testing.
+- **MVP scope**: Focus on a single asset and broker initially. Mitigation: Modular design for future expansion.
+- **Resource constraints**: Limited by available broker APIs and data. Mitigation: Start with stubs and backtesting, add real APIs as available.
+
+# Appendix  
+- **Research findings**: VWAP bounce strategies are popular for intraday mean reversion; options trading adds leverage and complexity.
+- **Technical specifications**: Rust, async (tokio), serde, reqwest, modular trait-based API, CLI-first design.
+</PRD>
