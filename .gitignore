@@ -5,7 +5,7 @@ venv/
 logs
 *.log
 npm-debug.log*
-pnpm-lock.yaml
+.next
 yarn-debug.log*
 yarn-error.log*
 dev-debug.log
