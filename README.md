@@ -23,16 +23,16 @@ This repository contains a Python project that implements the foundations of a t
 
 The current implementation is a stub and does not place real trades. It can serve as a starting point for further development.
 
-## Web Backtester
+## Web UI and API
 
-A minimal web interface is included using Python's built‑in HTTP server and [htmx](https://htmx.org/).
+A minimal web interface is included using Python's built‑in HTTP server and [htmx](https://htmx.org/). It exposes an API so you can start or stop the mock trading loop and run backtests.
 Start the server with:
 
 ```bash
 python -m vwap_option_bot.main
 ```
 
-Then open `http://127.0.0.1:8080` in your browser. Click **Run Backtest** to execute a simple backtest on sample CSV data and view the strategy signals.
+Then open `http://127.0.0.1:8080` in your browser. Use the buttons to start/stop trading or to run a backtest. The status and logs automatically refresh every few seconds.
 
 ## Contributing
 
