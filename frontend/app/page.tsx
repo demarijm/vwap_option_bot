@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { TrendingUp, DollarSign, Activity } from "lucide-react"
+import { Hello } from "@/components/hello"
 
 // Mock data for demonstration
 const todayStats = {
@@ -46,6 +47,7 @@ export default function Dashboard() {
           </div>
         </div>
       </header>
+      <Hello />
 
       <div className="flex-1 p-6 space-y-6">
         {/* Stats Cards */}
