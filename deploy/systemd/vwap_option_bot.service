@@ -1,0 +1,13 @@
+[Unit]
+Description=VWAP Option Bot Service
+After=network.target
+
+[Service]
+User=botuser
+WorkingDirectory=/home/botuser/vwap_option_bot
+ExecStart=/usr/bin/python3 -m vwap_option_bot.main
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

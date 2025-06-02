@@ -37,3 +37,10 @@ Then open `http://127.0.0.1:8080` in your browser. Use the buttons to start/stop
 ## Contributing
 
 Pull requests are welcome. Please run `python -m unittest` before submitting changes.
+
+## Deployment
+
+Example deployment files are located in the `deploy/` directory.
+These include a `systemd` service definition and a GitHub Actions
+workflow that copies the project to a VPS. Replace the placeholder
+server details with your own values before using.
