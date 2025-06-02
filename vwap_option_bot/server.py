@@ -1,10 +1,14 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-import csv
 import json
 import threading
 import time
 
+from .domain import (
+    TradingDomain,
+    map_http_request,
+    handle_domain_request,
+)
 from .models import Candle
 from .strategies import StrategyRunner
 from .strategies.vwap_bounce import VwapBounce
@@ -12,73 +16,39 @@ from .strategies.breakout import Breakout
 
 INDEX_HTML = (Path(__file__).parent / "../static/index.html").resolve().read_text()
 
-TRADING_ACTIVE = False
+DOMAIN = TradingDomain()
 TRADE_THREAD: threading.Thread | None = None
-TRADE_LOGS: list[str] = []
-
-def load_candles(path: str) -> list[Candle]:
-    candles: list[Candle] = []
-    with open(path, newline="") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            candles.append(
-                Candle(
-                    timestamp=int(row["timestamp"]),
-                    open=float(row["open"]),
-                    high=float(row["high"]),
-                    low=float(row["low"]),
-                    close=float(row["close"]),
-                    volume=float(row["volume"]),
-                )
-            )
-    return candles
-
-def run_backtest() -> list[str]:
-    candles = load_candles("data/sample.csv")
-    runner = StrategyRunner()
-    runner.add_strategy(VwapBounce())
-    runner.add_strategy(Breakout())
-    history: list[Candle] = []
-    logs: list[str] = []
-    for c in candles:
-        history.append(c)
-        triggered = runner.run_on_slice(history)
-        for name in triggered:
-            logs.append(f"{name} triggered at {c.timestamp}")
-    return logs
 
 
 def trading_loop():
-    global TRADING_ACTIVE
-    candles = load_candles("data/sample.csv")
+    candles = DOMAIN.load_candles("data/sample.csv")
     runner = StrategyRunner()
     runner.add_strategy(VwapBounce())
     runner.add_strategy(Breakout())
     history: list[Candle] = []
     for c in candles:
-        if not TRADING_ACTIVE:
+        if not DOMAIN.get_status():
             break
         history.append(c)
         triggered = runner.run_on_slice(history)
         for name in triggered:
             msg = f"{name} triggered at {c.timestamp}"
-            TRADE_LOGS.append(msg)
+            DOMAIN.trade_logs.append(msg)
         time.sleep(0.1)
-    TRADING_ACTIVE = False
+    DOMAIN.stop()
 
 
 def start_trading():
-    global TRADING_ACTIVE, TRADE_THREAD
-    if TRADING_ACTIVE:
+    global TRADE_THREAD
+    if DOMAIN.get_status():
         return
-    TRADING_ACTIVE = True
+    DOMAIN.start()
     TRADE_THREAD = threading.Thread(target=trading_loop, daemon=True)
     TRADE_THREAD.start()
 
 
 def stop_trading():
-    global TRADING_ACTIVE
-    TRADING_ACTIVE = False
+    DOMAIN.stop()
 
 class Handler(BaseHTTPRequestHandler):
     def _send(self, content: bytes, content_type: str = "text/html") -> None:
@@ -95,27 +65,21 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/":
             content = INDEX_HTML.encode()
             self._send(content)
-        elif self.path == "/api/status":
-            status = json.dumps({"trading": TRADING_ACTIVE})
-            self._send(status.encode(), "application/json")
-        elif self.path == "/api/logs":
-            logs = "<br>".join(TRADE_LOGS)
-            self._send(logs.encode())
+            return
+        req = map_http_request("GET", self.path)
+        if req:
+            resp = handle_domain_request(DOMAIN, req)
+            self._send(resp.content.encode(), resp.content_type)
         else:
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b"Not Found")
 
     def do_POST(self):
-        if self.path == "/api/backtest":
-            results = "<br>".join(run_backtest())
-            self._send(results.encode())
-        elif self.path == "/api/start":
-            start_trading()
-            self._send(b"Trading started")
-        elif self.path == "/api/stop":
-            stop_trading()
-            self._send(b"Trading stopped")
+        req = map_http_request("POST", self.path)
+        if req:
+            resp = handle_domain_request(DOMAIN, req)
+            self._send(resp.content.encode(), resp.content_type)
         else:
             self.send_response(404)
             self.end_headers()
