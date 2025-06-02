@@ -2,12 +2,17 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>VWAP Backtester</title>
+    <title>VWAP Bot Control</title>
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </head>
 <body>
-    <h1>VWAP Backtester</h1>
-    <button hx-post="/backtest" hx-target="#results" hx-swap="innerHTML">Run Backtest</button>
+    <h1>VWAP Bot Control</h1>
+    <div id="status" hx-get="/api/status" hx-trigger="load, every 5s"></div>
+    <button hx-post="/api/start" hx-target="#status" hx-swap="outerHTML">Start Trading</button>
+    <button hx-post="/api/stop" hx-target="#status" hx-swap="outerHTML">Stop Trading</button>
+    <button hx-post="/api/backtest" hx-target="#results" hx-swap="innerHTML">Run Backtest</button>
     <div id="results"></div>
+    <h2>Logs</h2>
+    <div id="logs" hx-get="/api/logs" hx-trigger="load, every 5s"></div>
 </body>
 </html>
