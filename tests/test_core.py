@@ -2,11 +2,15 @@ import unittest
 
 from vwap_option_bot.models import Candle, OptionContract, TradeLog
 from vwap_option_bot.utils import calculate_vwap, is_three_red_candles
-from vwap_option_bot.exchange import AlpacaApiStub
+from vwap_option_bot.exchange import (
+    AlpacaApiStub,
+    InteractiveBrokersApiStub,
+    get_exchange_api,
+)
 
 class TestCore(unittest.TestCase):
     def get_api(self):
-        return AlpacaApiStub()
+        return get_exchange_api("alpaca")
 
     def test_calculate_vwap(self):
         candles = [
@@ -45,6 +49,11 @@ class TestCore(unittest.TestCase):
         api = self.get_api()
         balance = api.get_account_balance()
         self.assertEqual(balance, 10000.0)
+
+    def test_provider_switch(self):
+        api = get_exchange_api("ib")
+        self.assertIsInstance(api, InteractiveBrokersApiStub)
+        self.assertEqual(api.get_account_balance(), 50000.0)
 
     def test_get_option_chain_stub(self):
         api = self.get_api()

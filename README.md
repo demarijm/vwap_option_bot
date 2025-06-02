@@ -5,7 +5,7 @@ This repository contains a Python project that implements the foundations of a t
 ## Features
 
 - Basic data classes for candles, option contracts and trade logs
-- An abstract `ExchangeApi` with a stub implementation for interacting with a broker
+- An abstract `ExchangeApi` with stub implementations and a simple factory for switching providers
 - Utility functions to calculate VWAP and detect three consecutive red candles
 - Unit tests validating the core logic
 - A step‑by‑step development plan is provided in [plan.md](plan.md)
@@ -15,7 +15,14 @@ This repository contains a Python project that implements the foundations of a t
 1. Ensure Python 3.11+ is installed.
 2. Clone this repository and navigate to its directory.
 3. Install dependencies (none are required for the core features).
-4. Run the test suite to verify the project works correctly:
+4. Use the provider factory to create a trading API instance:
+
+   ```python
+   from vwap_option_bot.exchange import get_exchange_api
+   api = get_exchange_api("alpaca")  # or "ib"
+   ```
+
+5. Run the test suite to verify the project works correctly:
 
    ```bash
    python -m unittest
