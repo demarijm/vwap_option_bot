@@ -1,14 +1,18 @@
 # VWAP Option Bot
 
-This repository contains a Python project that implements the foundations of a trading bot based on the Volume Weighted Average Price (VWAP) strategy. The goal is to trade same-day options when the price dips below VWAP and several red candles occur in sequence.
+This repository contains a Python project that implements the foundations of a trading bot based on the Volume Weighted Average Price (VWAP) strategy. It includes sample strategies and a small web interface for running backtests or a mock trading loop. The goal is to trade same-day options when the price dips below VWAP and several red candles occur in sequence.
 
 ## Features
 
 - Basic data classes for candles, option contracts and trade logs
 - An abstract `ExchangeApi` with a stub implementation for interacting with a broker
 - Utility functions to calculate VWAP and detect three consecutive red candles
+- Simple strategies with a `StrategyRunner` to evaluate them
+- Minimal HTTP server providing a web UI and API endpoints
+- Sample CSV data for backtesting the strategies
 - Unit tests validating the core logic
-- A step‑by‑step development plan is provided in [plan.md](plan.md)
+- A step‑by‑step development plan is provided in [plan.md](plan.md). The plan
+  describes the original Rust design but still outlines the overall roadmap.
 
 ## Getting Started
 
@@ -18,7 +22,7 @@ This repository contains a Python project that implements the foundations of a t
 4. Run the test suite to verify the project works correctly:
 
    ```bash
-   python -m unittest
+   python -m unittest discover -s tests -v
    ```
 
 The current implementation is a stub and does not place real trades. It can serve as a starting point for further development.
@@ -36,4 +40,4 @@ Then open `http://127.0.0.1:8080` in your browser. Use the buttons to start/stop
 
 ## Contributing
 
-Pull requests are welcome. Please run `python -m unittest` before submitting changes.
+Pull requests are welcome. Please run `python -m unittest discover -s tests -v` before submitting changes.
